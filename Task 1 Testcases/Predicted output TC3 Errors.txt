@@ -1,0 +1,12 @@
+Token					Error
+__________________________________________________________________________________________
+#					Error
+10.5.2					Error
+.					Error         //here is the dot before 35 (if z <> .35 then)
+"the val of z1 + 1.5*factorial(5) is =; Error
+" 					Error
+/* this not supposed to be error
+return 0;
+}
+*/	Comment  //This is not error
+"#love_compiler				Error

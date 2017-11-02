@@ -1,0 +1,68 @@
+Token		Type
+_________________________________
+int		DataType    //maybe DataType (prefered in next phase) or Int
+main		Main        //maybe Main (prefered in next phase) or Identifier
+(		LeftParentheses
+)		RightParentheses
+{		LeftBraces
+string		DataType    //maybe DataType or StringVar
+s		ID
+:=		Assign
+"number of iterations = " String
+;		SemiColon
+write		Write
+s		ID
+;		SemiColon
+write		Write
+endl		Endline
+;		SemiColon
+float		DataType    //maybe DataType (prefered in next phase) or Float
+z1		ID
+:=		Assign
+3		Num
+*		Times
+2		Num
+*		Times
+(		LeftParentheses
+2		Num
++		Plus
+1		Num
+)		RightParentheses
+/		Division
+2		Num
+-		Minus
+5.5		Num
+;		SemiColon
+int		DataType     //maybe DataType (prefered in next phase) or Int
+val		ID
+;		SemiColon    //maybe SemiColon (prefered for next phase) or operator
+read		Read
+val		ID
+;		SemiColon
+if		If
+z1		ID
+>		GreaterThan
+5		Num
+||		Or
+z1		ID
+<		LessThan
+counter		ID
+&&		And
+z1		ID
+=		Equal
+1		Num
+then		Then
+write		Write
+z1		ID
+;		SemiColon
+else		Else
+z1		ID
+:=		Assign
+val		ID
+;		SemiColon
+end		End
+return		Return
+0		Num
+;		SemiColon
+}		RightBraces
+eof		EndFile       //not essential
