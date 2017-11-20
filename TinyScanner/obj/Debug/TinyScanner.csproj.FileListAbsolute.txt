@@ -2,7 +2,7 @@ E:\4th Year\1st semester\Compiler\Tasks\TinyScanner\TinyScanner\bin\Debug\TinySc
 E:\4th Year\1st semester\Compiler\Tasks\TinyScanner\TinyScanner\bin\Debug\TinyScanner.exe
 E:\4th Year\1st semester\Compiler\Tasks\TinyScanner\TinyScanner\bin\Debug\TinyScanner.pdb
 E:\4th Year\1st semester\Compiler\Tasks\TinyScanner\TinyScanner\obj\Debug\TinyScanner.csprojResolveAssemblyReference.cache
-E:\4th Year\1st semester\Compiler\Tasks\TinyScanner\TinyScanner\obj\Debug\TinyScanner.Scanner.resources
+E:\4th Year\1st semester\Compiler\Tasks\TinyScanner\TinyScanner\obj\Debug\TinyScanner.Token.resources
 E:\4th Year\1st semester\Compiler\Tasks\TinyScanner\TinyScanner\obj\Debug\TinyScanner.Properties.Resources.resources
 E:\4th Year\1st semester\Compiler\Tasks\TinyScanner\TinyScanner\obj\Debug\TinyScanner.csproj.GenerateResource.Cache
 E:\4th Year\1st semester\Compiler\Tasks\TinyScanner\TinyScanner\obj\Debug\TinyScanner.exe

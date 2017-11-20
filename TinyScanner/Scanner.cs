@@ -10,8 +10,15 @@ using System.Windows.Forms;
 
 namespace TinyScanner
 {
+    public class Token
+    {
+        public string lex;
+        public string tokentype;
+        public int lineNumber;
+    }
     public partial class Scanner : Form
     {
+
         List<int> lineNumber = new List<int>();
         public Scanner()
         {
@@ -36,28 +43,31 @@ namespace TinyScanner
             dataGridView2.Refresh();
         }
 
+
+
         private void button1_Click(object sender, EventArgs e)
         {
             clearGridViews();
             string[] sourceCode = textBox1.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
             ScannerPhase scanner = new ScannerPhase();
             lineNumber = scanner.getlineNumberList();
-            List<KeyValuePair<string, string>> scannedCode = new List<KeyValuePair<string,string>>();
-            scanner.scanning(sourceCode, ref scannedCode);
+            //List<KeyValuePair<string, string>> scannedCode = new List<KeyValuePair<string,string>>();
+            List<Token> tokens = new List<Token>();
+            scanner.scanning(sourceCode, ref tokens);
             int cnt = 0;
-            foreach (var value in scannedCode)
+            foreach (var value in tokens)
             {
-                if (value.Value != "Error")
+                if (value.tokentype != "Error")
                 {
                     dataGridView1.RowCount++;
-                    dataGridView1.Rows[dataGridView1.RowCount - 2].Cells[0].Value = value.Key;
-                    dataGridView1.Rows[dataGridView1.RowCount - 2].Cells[1].Value = value.Value;
+                    dataGridView1.Rows[dataGridView1.RowCount - 2].Cells[0].Value = value.lex;
+                    dataGridView1.Rows[dataGridView1.RowCount - 2].Cells[1].Value = value.tokentype;
                 }
                 else
                 {
                     dataGridView2.RowCount++;
-                    dataGridView2.Rows[dataGridView2.RowCount - 2].Cells[0].Value = lineNumber[cnt];
-                    dataGridView2.Rows[dataGridView2.RowCount - 2].Cells[1].Value = value.Key;
+                    dataGridView2.Rows[dataGridView2.RowCount - 2].Cells[0].Value = value.lineNumber;
+                    dataGridView2.Rows[dataGridView2.RowCount - 2].Cells[1].Value = value.lex;
                     cnt++;
                 }
             }

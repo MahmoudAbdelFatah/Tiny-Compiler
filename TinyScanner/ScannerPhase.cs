@@ -8,8 +8,8 @@ namespace TinyScanner
 {
     public class ScannerPhase
     {
+        Token token;
         List<KeyValuePair<string, string>> symboles = new List<KeyValuePair<string, string>>();
-        //private Dictionary<string, string> symboles = new Dictionary<string, string>();
         private List<int> lineNumber = new List<int>();
 
         enum TokenType
@@ -67,7 +67,7 @@ namespace TinyScanner
             return "";
         }
 
-        public void scanning(string[] sourceCode, ref List<KeyValuePair<string, string>> scannedCode ) {
+        public void scanning(string[] sourceCode, ref List<Token> tokens ) {
             setSymboles();
             string tokenType = "", lexeme="";
             bool comment = false, error=false, stringQWithoutQuate=false;
@@ -98,12 +98,13 @@ namespace TinyScanner
                             }
                             if (!stringQWithoutQuate)
                             {
-                                addInScannerList(ref scannedCode, lexeme, TokenType.String.ToString());
+                                addInScannerList(ref tokens, lexeme, TokenType.String.ToString(), cnt);
+
                                 continue;
                             }
                             else
                             {
-                                addInScannerList(ref scannedCode, lexeme, TokenType.Error.ToString());
+                                addInScannerList(ref tokens, lexeme, TokenType.Error.ToString(), cnt);
                                 stringQWithoutQuate = false;
                                 lineNumber.Add(cnt);
                                 continue;
@@ -117,7 +118,7 @@ namespace TinyScanner
                                 lexeme += "*/";
                                 comment = false;
                                 tokenType = TokenType.Comment.ToString();
-                                addInScannerList(ref scannedCode, lexeme, tokenType);
+                                addInScannerList(ref tokens, lexeme, tokenType, cnt);
                                 i++;
                             }
                             else
@@ -143,14 +144,14 @@ namespace TinyScanner
                             //check if this idetifier is reserved keyword
                             if (Enum.IsDefined(typeof(ReservedKeyWordes), lexeme))
                             {
-                                addInScannerList(ref scannedCode, c + lexeme.Substring(1), lexeme);
+                                addInScannerList(ref tokens, c + lexeme.Substring(1), lexeme, cnt);
                             }
                             else if (Enum.IsDefined(typeof(Datatype), lexeme))
                             {
-                                addInScannerList(ref scannedCode, c + lexeme.Substring(1), "DataType");
+                                addInScannerList(ref tokens, c + lexeme.Substring(1), "DataType", cnt);
                             }
                             else
-                                addInScannerList(ref scannedCode, c+lexeme.Substring(1), TokenType.Identifier.ToString());
+                                addInScannerList(ref tokens, c+lexeme.Substring(1), TokenType.Identifier.ToString(), cnt);
                             i--; //when return from getIdetifier the i is increased by 1
                             continue;
                         }
@@ -161,7 +162,7 @@ namespace TinyScanner
                             lexeme = "";
                             lexeme = line[i + 1]+"";
                             i += 2;
-                            addInScannerList(ref scannedCode, lexeme, TokenType.Char.ToString());
+                            addInScannerList(ref tokens, lexeme, TokenType.Char.ToString(), cnt);
                             continue;
 
                         }
@@ -178,7 +179,7 @@ namespace TinyScanner
                             }
                             else
                                 tokenType = TokenType.Number.ToString();
-                            addInScannerList(ref scannedCode, lexeme, tokenType);
+                            addInScannerList(ref tokens, lexeme, tokenType, cnt);
                             //need to sub -1 from i to start from the char after the number
                             i--;
                             continue;
@@ -195,7 +196,7 @@ namespace TinyScanner
                                 symbolName = getSymbolName(symbol);
                                 if (symbolName != "")
                                 {
-                                    addInScannerList(ref scannedCode, symbol, symbolName);
+                                    addInScannerList(ref tokens, symbol, symbolName, cnt);
                                     i++;
                                     continue;
                                 }
@@ -204,7 +205,7 @@ namespace TinyScanner
                             symbolName = getSymbolName(symbol);
                             if (symbolName != "" && !stringQWithoutQuate)
                             {
-                                addInScannerList(ref scannedCode, symbol, symbolName);
+                                addInScannerList(ref tokens, symbol, symbolName, cnt);
                                 continue;
                             }
                             
@@ -220,7 +221,7 @@ namespace TinyScanner
                                 lexeme += line[++i];
                             }
                             if (!stringQWithoutQuate)
-                            addInScannerList(ref scannedCode, lexeme, TokenType.Error.ToString());
+                            addInScannerList(ref tokens, lexeme, TokenType.Error.ToString(), cnt);
                         }
                         
                     }
@@ -229,13 +230,18 @@ namespace TinyScanner
             if (comment)
             {
                 lineNumber.Add(cnt);
-                addInScannerList(ref scannedCode, lexeme, TokenType.Error.ToString());
+                addInScannerList(ref tokens, lexeme, TokenType.Error.ToString(), cnt);
             }
         }
 
-        private void addInScannerList(ref List<KeyValuePair<string, string>>scannedCode, string s, string tokenType)
+        private void addInScannerList(ref List<Token>tokens, string lex, string tokenType, int lineNumber)
         {
-            scannedCode.Add(new KeyValuePair<string, string>(s, tokenType));
+            //scannedCode.Add(new KeyValuePair<string, string>(s, tokenType));
+            token = new Token();
+            token.lex=lex;
+            token.tokentype=tokenType;
+            token.lineNumber= lineNumber;
+            tokens.Add(token);
             //scannedCode[s]=tokenType;
         }
 
