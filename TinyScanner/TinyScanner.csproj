@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ParsingPhase.cs" />
     <Compile Include="Scanner.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -35,6 +35,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.parseTree = new System.Windows.Forms.TreeView();
+            this.parseButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.SuspendLayout();
@@ -59,7 +61,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(104, 405);
+            this.button1.Location = new System.Drawing.Point(34, 415);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(141, 62);
             this.button1.TabIndex = 2;
@@ -103,11 +105,30 @@
             this.dataGridView2.TabIndex = 7;
             this.dataGridView2.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView2_CellContentClick);
             // 
+            // parseTree
+            // 
+            this.parseTree.Location = new System.Drawing.Point(769, 42);
+            this.parseTree.Name = "parseTree";
+            this.parseTree.Size = new System.Drawing.Size(252, 425);
+            this.parseTree.TabIndex = 8;
+            // 
+            // parseButton
+            // 
+            this.parseButton.Location = new System.Drawing.Point(198, 415);
+            this.parseButton.Name = "parseButton";
+            this.parseButton.Size = new System.Drawing.Size(141, 62);
+            this.parseButton.TabIndex = 9;
+            this.parseButton.Text = "Parse";
+            this.parseButton.UseVisualStyleBackColor = true;
+            this.parseButton.Click += new System.EventHandler(this.parseButton_Click);
+            // 
             // Scanner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(743, 479);
+            this.ClientSize = new System.Drawing.Size(1033, 479);
+            this.Controls.Add(this.parseButton);
+            this.Controls.Add(this.parseTree);
             this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -134,6 +155,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.TreeView parseTree;
+        private System.Windows.Forms.Button parseButton;
     }
 }
 

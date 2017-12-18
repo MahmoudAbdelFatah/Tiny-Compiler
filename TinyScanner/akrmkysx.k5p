@@ -1,0 +1,1037 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace TinyScanner
+{
+    public class Node
+    {
+        public List<Node> children = new List<Node>();
+        public Token token;
+    }
+   
+    class ParsingPhase
+    {
+ 
+      private static List<Token> Tokens = new List<Token>();
+      private static int index = 0;
+     // private static bool scanforStablePoint = false; 
+        public static Node Parse(List<Token> Tokens_)
+        {
+            Node root = new Node();
+            root.token = new Token();
+            root.token.lex = "program";
+            Tokens = Tokens_; 
+            root = program();
+        
+            return root;
+        }
+          public static Node match (Token_Class tokentype ){
+              Node node = new Node();
+              if (index < Tokens.Count)
+                  if (tokentype == Tokens[index].tokentype  )
+                      {
+                      
+                          node.token = Tokens[index];
+                          index++;
+                           
+                          return node;
+                      }
+                   
+              
+                  return null;    
+          }
+              // 1
+            public static Node program()
+            {
+                Node node = new Node();
+                node.token = new Token();
+                node.token.lex = "Program";
+                Node functionStatementNode = functionStatement(); 
+                if(functionStatementNode!= null)
+                {
+                    node.children.Add(functionStatementNode);
+                    node.children.Add(program());
+                    return node; 
+                }
+               functionStatementNode =mainFuction();
+               if (functionStatementNode != null)
+                {
+                   node.children.Add(functionStatementNode);
+                    return node; 
+                }
+                return null;
+            }
+            //2
+            public static Node mainFuction()
+            {
+                Node node = new Node();
+                node.token = new Token();
+                node.token.lex = "Main Fuction";
+                Node datatypeNode = dataType();
+               if (datatypeNode!= null)
+               {
+                   node.children.Add(datatypeNode);
+                   node.children.Add(match(Token_Class.Main));
+                   node.children.Add(match(Token_Class.LeftParentheses));
+                   node.children.Add(match(Token_Class.RightParentheses));
+                   if(node.children[1]==null|| node.children[2]==null||node.children[3]==null)
+                   {
+                       addError("Main () ");
+                   }
+                   node.children.Add(functionBody());
+
+                   return node;
+               }
+                
+                return null;
+            }
+            public static Node functionStatement()
+            {
+                // special Case it Main Fun 
+                if (Tokens[index + 1].tokentype == Token_Class.Main)
+                {
+                    return null;
+                }
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Fuction Statement";
+                  
+                 Node decalartionNode = functionDeclaration();
+                 if (decalartionNode != null)
+                 {
+                     node.children.Add(decalartionNode);
+                     node.children.Add(functionBody());
+                     return node; 
+                 }
+                 return null ;
+            }
+            public static Node functionDeclaration()
+            {
+                Node node = new Node();
+                node.token = new Token();
+                node.token.lex = "Fuction Statement";
+                Node datatypeNode = dataType();
+                if (datatypeNode != null)
+                {
+                    node.children.Add(datatypeNode);
+                    node.children.Add(functionName());
+                    node.children.Add(match(Token_Class.LeftParentheses));
+                    node.children.Add(parameters());
+                    node.children.Add(match(Token_Class.RightParentheses));
+                    if (node.children[1] == null || node.children[2] == null || node.children[3] == null || node.children[4] == null)
+                    {
+                        addError("DataType FunctionName (no_Para) ");
+                    }
+                    return node;
+                }
+                return null; 
+               
+            }
+            public static Node functionBody()
+            {
+                Node node = new Node();
+                node.token = new Token();
+                node.token.lex = "Function Body";
+                Node leftNode = match(Token_Class.LeftBraces); 
+                if(leftNode!=null)
+                {
+                    node.children.Add(leftNode);
+                    node.children.Add(statements());
+                    node.children.Add(returnStatement());
+                    node.children.Add(match(Token_Class.RightBraces));
+                    if (node.children[1] == null || node.children[2] == null || node.children[3] == null || node.children[0] == null)
+                    {
+                        addError("{ Statments }");
+                    }
+                    return node;
+                }
+                return null;
+                
+            }
+             public static Node statements()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Statements";
+                 Node statementNode = statement();
+                 if(statementNode != null )
+                 {
+                     node.children.Add(statementNode);
+                     node.children.Add(statements());
+                     return node;
+                 }
+                 return null;
+             }
+             public static Node statement()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Statement";
+                 Node statmentNode = repeatStatement();
+                 if(statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     return node; 
+                 }
+                 statmentNode = ifStatement();
+                 if (statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     return node;
+                 }
+                 statmentNode = readStatement();
+                 if (statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     return node;
+                 }
+                 statmentNode =  writeStatement();
+                 if (statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     return node;
+                 }
+                 statmentNode = declarationStatement();
+                 if (statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     return node;
+                 }
+                 statmentNode = assignmentStatement();
+                 if (statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     return node;
+                 }
+                 statmentNode = commentStatement();
+                 if (statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     return node;
+                 }
+                 
+                 return null;
+             }
+             public static Node parameter()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Parameter";
+                 Node dataTypeNode = dataType(); 
+                 if(dataTypeNode != null )
+                 {
+                     node.children.Add(dataTypeNode);
+                     node.children.Add(identifier());
+                     return node; 
+                 }
+                 return null;
+             }
+             public static Node parameters()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Parameters";
+                 Node parameterNode = parameter();
+                 if (parameterNode != null)
+                 {
+                     node.children.Add(parameterNode);
+                     node.children.Add(parametersCont());
+                     return node;
+                 }
+                 return null;
+             }
+             public static Node parametersCont()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Parameters Cont";
+                 Node CommaNode = comma(); 
+                 if (CommaNode != null)
+                 {
+                     node.children.Add(CommaNode);
+                     node.children.Add(parameter());
+                     node.children.Add(parametersCont());
+                     return node;
+                 }
+                 return null;
+             }
+             public static Node functionName()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Fuction Name";
+                 Node identifierNode = identifier();
+                 if(identifierNode != null )
+                 {
+                     node.children.Add(identifierNode);
+                     return node;
+                 }
+                 return null;  
+             }
+             
+             public static Node repeatStatement()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Repeat Statement";
+                 Node repeatNode = match(Token_Class.Repeat);
+                 if (repeatNode != null)
+                 {
+                     node.children.Add(repeatNode);
+                     node.children.Add(statements());
+                     node.children.Add(match(Token_Class.Until));
+                     node.children.Add(conditionStatement());
+
+                     return node;
+                 }
+                 return null;
+                
+             }
+             public static Node elseStatement()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Else Statement";
+                 Node elseNode = match(Token_Class.Else);
+                 if (elseNode != null)
+                 {
+                     node.children.Add(elseNode);
+                     node.children.Add(statements());
+                     node.children.Add(match(Token_Class.End));
+
+                     return node;
+                 }
+                 return null;
+             }
+             public static Node elseIfStatement()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "ElseIf Statement";
+                 Node elseifNode = match(Token_Class.Elseif);
+                 if (elseifNode != null)
+                 {
+                     node.children.Add(elseifNode);
+                     node.children.Add(conditionStatement());
+                     node.children.Add(match(Token_Class.Then));
+                     node.children.Add(statements());
+                     node.children.Add(endIfStatement());
+
+                     return node;
+                 }
+                 return null; 
+             }
+             public static Node ifStatement()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "If Statement";
+                 Node ifNode = match(Token_Class.If);
+                 if (ifNode != null)
+                 {
+                     node.children.Add(ifNode);
+                     node.children.Add(conditionStatement());
+                     node.children.Add(match(Token_Class.Then));
+                     node.children.Add(statements());
+                     node.children.Add(endIfStatement());
+                     return node;
+
+                 }
+                 return null;
+                
+             }
+             public static Node endIfStatement()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "EndIf Statement";
+                 Node elseStatNode = elseStatement();
+                 if (elseStatNode != null)
+                 {
+                     node.children.Add( elseStatNode);
+                     node.children.Add(elseIfStatement());
+                     node.children.Add(match(Token_Class.End));
+                     return node;
+                 }
+                 elseStatNode = elseIfStatement();
+                 if (elseStatNode != null)
+                 {
+                     node.children.Add(elseStatNode);
+                     
+                     return node;
+                 }
+                 elseStatNode = match(Token_Class.End);
+                 if (elseStatNode != null)
+                 {
+                     node.children.Add(elseStatNode);
+                     return node;
+                 }
+                 return null;
+             }
+             public static Node orOP()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Or Operation";
+                 Node orNode = match(Token_Class.Or);
+                 if (orNode != null)
+                 {
+                     node.children.Add(orNode);
+                     return node;
+                 }
+                
+                 return null;
+             }
+             public static Node andOP()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "And Operation";
+                 Node andNode = match(Token_Class.And);
+                 if (andNode != null)
+                 {
+                     node.children.Add(andNode);
+                     return node;
+                 }
+                 return null;
+                 
+             }
+             public static Node condition()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Condition";
+                 Node expreNode = expression();
+                 if (expreNode != null)
+                 {
+                     node.children.Add(expreNode);
+                     node.children.Add(conditionOperator());
+                     node.children.Add(expression());
+                     return node;
+                 }
+                 return null;
+                
+             }
+             
+             public static Node conditionTerm()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Condition Term";
+                 Node CondationNode = condition();
+                 if (CondationNode != null)
+                 {
+                     node.children.Add(CondationNode);
+                     node.children.Add(conditionTermDash());
+                     return node;
+                 }
+                 return null;
+             }
+             public static Node conditionTermDash()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Condition Term Dash";
+                 Node andNode = andOP();
+                 if(andNode != null)
+                 {
+                     node.children.Add(andNode);
+                     node.children.Add(condition());
+                     node.children.Add(conditionTermDash());
+                 }
+                
+                 return node;
+             }
+             public static Node conditionStatement()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Condition Statement";
+                 Node conditionNode = condition();
+                 if (conditionNode != null)
+                 {
+                     node.children.Add(conditionNode);
+                     node.children.Add(orOP());
+                     node.children.Add(conditionTerm());
+                     return node;
+                 }
+                 else {
+                     conditionNode = conditionTerm();
+                     if (conditionNode != null)
+                     {
+                         node.children.Add(conditionNode);
+                     }
+                  
+                 }
+             
+                 return node;
+             }
+             public static Node conditionOperator()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Condition Operator";
+                 Node OpNode = match(Token_Class.LessThan);
+                 if (OpNode != null)
+                 {
+                     node.children.Add(OpNode);
+                     return node;
+                 }
+                 OpNode = match(Token_Class.GreaterThan);
+                 if (OpNode != null)
+                 {
+                     node.children.Add(OpNode);
+                     return node;
+                 }
+                 OpNode = match(Token_Class.Equal);
+                 if (OpNode != null)
+                 {
+                     node.children.Add(OpNode);
+                     return node;
+                 }
+                 OpNode = match(Token_Class.NotEqual);
+                 if (OpNode != null)
+                 {
+                     node.children.Add(OpNode);
+                     return node;
+                 }
+              
+                 return null;
+             }
+             public static Node returnStatement()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Return Statement";
+                    Node returnNode = match(Token_Class.Return) ;
+                    if (returnNode != null)
+                    {
+                        node.children.Add(returnNode);
+                        node.children.Add(expression());
+                        node.children.Add(match(Token_Class.SemiColon));
+                        return node;
+                    }
+                    return null;
+             }
+             public static Node readStatement()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Read Statement";
+                 
+                 Node readNode = match(Token_Class.Read);
+                 if(readNode != null)
+                 {
+                     node.children.Add(readNode);
+                     node.children.Add(identifier());
+                     Node simNode = match(Token_Class.SemiColon);
+                     node.children.Add(simNode);
+
+                     return node;
+                 }
+                 return null; 
+             }
+              
+             public static Node writeStatement()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Write Statement";
+                 Node writeNode = match(Token_Class.Write);
+                 if (writeNode != null)
+                 {
+                     node.children.Add(writeNode);
+                     node.children.Add(writeStatementCont());
+                     node.children.Add(match(Token_Class.SemiColon));
+                     return node;
+
+                 }
+                 return null;
+             }
+             public static Node writeStatementCont()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Write Statement Cont";
+                Node endlNode =  match(Token_Class.Endl);
+                if (endlNode != null)
+                {
+                    node.children.Add(endlNode);
+                    return node;
+                }
+                else
+                {
+                    Node expreNode = expression();
+                    if (expreNode != null)
+                    {
+                        node.children.Add(expreNode);
+                        
+                        return node;
+                    }
+                }
+                 
+                 return null;
+             }
+           
+             public static Node declarationStatement()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Declaration Statement";
+                 Node dataTypeNode = dataType();
+                 if (dataTypeNode != null)
+                 {
+                     node.children.Add(dataTypeNode);
+                     node.children.Add(identifier());
+                     node.children.Add(declarationStatementCont());
+                     node.children.Add(match(Token_Class.SemiColon));
+                     return node;
+                 }
+                 return null;
+                
+             }
+             public static Node declarationStatementCont()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Declaration StatementCont";
+                 Node commaNode = declarationStatementCase();
+                 if (commaNode != null)
+                 {
+                     node.children.Add(commaNode);
+                     node.children.Add(declarationStatementCont());
+                     return node; 
+                 }
+                 return null;
+             }
+             public static Node declarationStatementCase()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Declaration Statement Case";
+                 Node commaNode = comma();
+                 if (commaNode != null)
+                 {
+                     node.children.Add(commaNode);
+                     node.children.Add(identifier());
+                     return node;
+                 }
+                 Node assignNode = match(Token_Class.Assign);
+                 if (assignNode != null)
+                 {
+                     node.children.Add(assignNode);
+                     node.children.Add(expression());
+                     return node;
+                 }
+                 return null;
+             }
+             public static Node comma()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Comma";
+                 Node CommaNode = match(Token_Class.Comma);
+                 if (CommaNode != null)
+                 {
+                     node.children.Add(CommaNode);
+                     return node;
+                 }
+                 return null;
+             }
+             public static Node dataType()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "DataType";
+
+                 Node intNode = match(Token_Class.Int);
+                 
+                
+               
+                 if (intNode != null)
+                 {
+                     node.children.Add(intNode);
+                     return node;
+                 }
+                 Node stringNode = match(Token_Class.String);
+                  if (stringNode != null)
+                 {
+                     node.children.Add(stringNode);
+                     return node;
+
+                 }
+                  Node floatNode = match(Token_Class.Float);
+                  if (floatNode != null)
+                 {
+                     node.children.Add(floatNode);
+                     return node;
+                 }
+                  Node charNode = match(Token_Class.Char);
+                  if (charNode != null)
+                 {
+                     node.children.Add(charNode);
+                     return node;
+
+                 }
+ 
+                 return null;
+             }
+             public static Node assignmentStatement()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Assignment Statement";
+                 Node identifierNode = identifier();
+                 if (identifierNode != null)
+                 {
+                     node.children.Add(identifierNode);
+                     node.children.Add(match(Token_Class.Assign));
+                     node.children.Add(expression());
+                     node.children.Add(match(Token_Class.SemiColon));
+                     return node;
+                 }
+                 
+                 return null;
+             }
+             public static Node expression()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Expression";
+                 Node termNode = term();
+                 if (termNode != null)
+                 {
+                     node.children.Add(termNode);
+                     node.children.Add(expressionDash());
+                     return node;
+                 }
+                 return null;
+             }
+             public static Node expressionDash()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Expression Dash";
+                 Node addopNode = addOp();
+                 if (addopNode != null)
+                 {
+                     node.children.Add(addopNode);
+                     node.children.Add(term());
+                     node.children.Add(expressionDash());
+                     return node;
+                 }
+                 return null;
+             }
+             public static Node addOp()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Add Operation";
+                 Node opNode = match(Token_Class.Plus);
+                 if (opNode != null)
+                 {
+                     node.children.Add(opNode);
+                     return node;
+                 }
+                 opNode = match(Token_Class.Minus);
+                 if (opNode != null)
+                 {
+                     node.children.Add(opNode);
+                     return node;
+                 }
+                 
+                 return null;
+             }
+             public static Node mulOp()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Mul Operation";
+                 Node timeNode = match(Token_Class.Times);
+                 if (timeNode != null)
+                 {
+                     node.children.Add(timeNode);
+                    
+                     return node;
+                 }
+                 timeNode = match(Token_Class.Division);
+                 if (timeNode != null)
+                 {
+                     node.children.Add(timeNode);
+
+                     return node;
+                 }
+                 return null;
+             }
+
+             public static Node term()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Term";
+                 Node factorNode = factor();
+                 if (factorNode != null)
+                 {
+                     node.children.Add(factorNode);
+                     node.children.Add(termDash());
+                     return node;
+                 }
+                 return null;
+                 
+             }
+             public static Node termDash()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "TermDash";
+             
+                 Node mulopNode = mulOp();
+                 if (mulopNode != null)
+                 {
+                     node.children.Add(mulopNode);
+                     node.children.Add(factor());
+                     node.children.Add(termDash());
+                     return node;
+                 }
+                 return null;
+             }
+             public static Node factor()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Factor";
+                 Node statmentNode = number();
+                 if (statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     return node; 
+                 }
+                 statmentNode = string_();
+                 if (statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     return node; 
+
+                 }
+                 statmentNode = functionCall();
+                 if (statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     return node; 
+                 }
+                 statmentNode = match(Token_Class.LeftParentheses);
+                 if (statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     node.children.Add(expression());
+                     node.children.Add(match(Token_Class.RightParentheses));
+                     return node;
+                 }
+                 statmentNode =identifier();
+                 if (statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     return node;
+                 }
+                 return null;
+             }
+             public static Node functionPart()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Function Part";
+                 Node statmentNode  = match(Token_Class.LeftParentheses);
+                 if (statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     node.children.Add(functionArguments());
+                     node.children.Add(match(Token_Class.RightParentheses));
+                     return node; 
+                 }
+                 return null ;
+             }
+             public static Node functionArguments()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Function Arguments";
+                 Node statmentNode = expression();
+                 if (statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     node.children.Add(functionArgumentsCont());
+                     return node; 
+                 }
+                 return null;
+             }
+             public static Node functionArgumentsCont()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Function Arguments";
+                 Node statmentNode = match(Token_Class.Comma);
+                 if (statmentNode != null)
+                 {
+                     node.children.Add(statmentNode);
+                     node.children.Add(identifier());
+                     node.children.Add(functionArgumentsCont());
+                     return node;
+                 }
+                 return null;
+             }
+             public static Node functionCall()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Function Call";
+                 Node identifierNode = identifier();
+                 if (identifierNode != null)
+                 {
+                     node.children.Add(identifierNode);
+                     node.children.Add(functionPart());
+                     return node;
+                 }
+                 return null;
+             }
+             public static Node identifier()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "identifier";
+ 
+                 Node readNode = match(Token_Class.Identifier);
+                 if (readNode != null)
+                 {
+                     node.children.Add(readNode);
+                     return node;
+                 }
+                 return null;
+             }
+
+             public static Node letterDigitComp()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "letter DigitComp";
+                 node.children.Add(string_());
+                 return node;
+             }
+             public static Node letter()
+             {
+                 Node node = new Node();
+                /* node.token = new Token();
+                 node.token.lex = "Assignment Statement";
+                 Node statmentNode = repeatStatement();
+                 */
+                 return node;
+             }
+             public static Node digit()
+             {
+                 Node node = new Node();
+               /*  node.token = new Token();
+                 node.token.lex = "Assignment Statement";
+                 Node statmentNode = repeatStatement();
+                 */
+                 return node;
+             }
+             public static Node digits()
+             {
+                 Node node = new Node();
+                /* node.token = new Token();
+                 node.token.lex = "Assignment Statement";
+                 Node statmentNode = repeatStatement();*/
+
+                 return node;
+             }
+             public static Node commentStatement()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Comment Statement";
+                 Node commentNode = match(Token_Class.Comment);
+                 if (commentNode != null)
+                 {
+                     node.children.Add(commentNode);
+                     return node; 
+                 }
+                 return null;
+             }
+             public static Node reservedKeywords()
+             {
+                 Node node = new Node();
+                /* node.token = new Token();
+                 node.token.lex = "Assignment Statement";
+                 Node statmentNode = repeatStatement();*/
+
+                 return node;
+             }
+
+             public static Node string_()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "String";
+                 Node stringNode = match(Token_Class.String);
+                 if (stringNode != null)
+                 {
+                     node.children.Add(stringNode);
+                     return node;
+                 }
+                 return null; 
+             }
+             public static Node number()
+             {
+                 Node node = new Node();
+                 node.token = new Token();
+                 node.token.lex = "Number";
+                 Node numberNode = match(Token_Class.Number);
+                 if (numberNode != null)
+                 {
+                     node.children.Add(numberNode);
+                     return node;
+                 }
+                 return null;
+                
+             }
+            
+
+        public static TreeNode PrintParseTree(Node root)
+        {
+            TreeNode tree = new TreeNode("Parse Tree");
+            TreeNode treeRoot = PrintTree(root);
+            if (treeRoot != null)
+                tree.Nodes.Add(treeRoot);
+            return tree;
+        }
+        static TreeNode PrintTree(Node root)
+        {
+            if (root == null || root.token == null)
+                return null;
+            TreeNode tree = new TreeNode(root.token.lex);
+            if (root.children.Count == 0)
+                return tree;
+            foreach (Node child in root.children)
+            {
+                if (child == null)
+                    continue;
+                tree.Nodes.Add(PrintTree(child));
+            }
+            return tree;
+        }
+        public static void clear()
+        {
+            Tokens = new List<Token>();
+            index = 0;
+        }
+        public static void  addError (string expected ){
+
+                      MessageBox.Show("Error as the Expected Value is" + expected +
+                                          "and the actual value is " + Tokens[index].tokentype.ToString());       
+        }
+
+    }
+}

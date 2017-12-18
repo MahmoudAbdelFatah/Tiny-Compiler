@@ -9,19 +9,19 @@ namespace TinyScanner
     public class ScannerPhase
     {
         Token token;
-        List<KeyValuePair<string, string>> symboles = new List<KeyValuePair<string, string>>();
+        List<KeyValuePair<string, Token_Class>> symboles = new List<KeyValuePair<string,Token_Class>>();
         private List<int> lineNumber = new List<int>();
 
-        enum TokenType
+      public  enum TokenType
         {
             Datatype, ReservedKeyWords, Number, Char, Comment, Error, Identifier, String, Main
         }
-        enum Datatype
+      public  enum Datatype
         {
             Int, Float, String, Char
         }
 
-        enum ReservedKeyWordes
+       public enum ReservedKeyWordes
         {
             Read, Write, Repeat, Until, If, Elseif, Else, Then, Return, Endl, Main, End
         }
@@ -33,43 +33,45 @@ namespace TinyScanner
 
         private void setSymboles()
         {
-            symboles.Add(new KeyValuePair<string, string>("+", "Plus"));
-            symboles.Add(new KeyValuePair<string, string>("-", "Minus"));
-            symboles.Add(new KeyValuePair<string, string>("/", "Division"));
-            symboles.Add(new KeyValuePair<string, string>("*", "Times"));
+            symboles.Add(new KeyValuePair<string, Token_Class>("+", Token_Class.Plus));
+            symboles.Add(new KeyValuePair<string, Token_Class>("-", Token_Class.Minus));
+            symboles.Add(new KeyValuePair<string, Token_Class>("/", Token_Class.Division));
+            symboles.Add(new KeyValuePair<string, Token_Class>("*", Token_Class.Times));
 
-            symboles.Add(new KeyValuePair<string, string>(">", "GreaterThan"));
-            symboles.Add(new KeyValuePair<string, string>("<", "LessThan"));
-            symboles.Add(new KeyValuePair<string, string>(">=", "GreaterThanOrEqual"));
-            symboles.Add(new KeyValuePair<string, string>("<=", "LessThanOrEqual"));
-            symboles.Add(new KeyValuePair<string, string>("=","Equal"));
-            symboles.Add(new KeyValuePair<string, string>(":=", "Assign"));
-                    
-            symboles.Add(new KeyValuePair<string, string>(")", "RightParentheses"));
-            symboles.Add(new KeyValuePair<string, string>("(", "LeftParentheses"));
+            symboles.Add(new KeyValuePair<string, Token_Class>(">", Token_Class.GreaterThan));
+            symboles.Add(new KeyValuePair<string, Token_Class>("<", Token_Class.LessThan));
+            symboles.Add(new KeyValuePair<string, Token_Class>(">=", Token_Class.GreaterThanOrEqual));
+            symboles.Add(new KeyValuePair<string, Token_Class>("<=", Token_Class.LessThanOrEqual));
+            symboles.Add(new KeyValuePair<string, Token_Class>("=", Token_Class.Equal));
+            symboles.Add(new KeyValuePair<string, Token_Class>(":=", Token_Class.Assign));
 
-            symboles.Add(new KeyValuePair<string, string>(";", "SemiColon"));
-            symboles.Add(new KeyValuePair<string, string>("}", "RightBraces"));
-            symboles.Add(new KeyValuePair<string, string>("{", "LeftBraces"));
-            symboles.Add(new KeyValuePair<string, string>(",", "Comma"));
-            symboles.Add(new KeyValuePair<string, string>("||", "Or"));
-            symboles.Add(new KeyValuePair<string, string>("&&", "And"));
+            symboles.Add(new KeyValuePair<string, Token_Class>(")", Token_Class.RightParentheses));
+            symboles.Add(new KeyValuePair<string, Token_Class>("(", Token_Class.LeftParentheses));
+            symboles.Add(new KeyValuePair<string, Token_Class>("<>", Token_Class.NotEqual));
+
+            symboles.Add(new KeyValuePair<string, Token_Class>(";", Token_Class.SemiColon));
+            symboles.Add(new KeyValuePair<string, Token_Class>("}", Token_Class.RightBraces));
+            symboles.Add(new KeyValuePair<string, Token_Class>("{", Token_Class.LeftBraces));
+            symboles.Add(new KeyValuePair<string, Token_Class>(",", Token_Class.Comma));
+            symboles.Add(new KeyValuePair<string, Token_Class>("||", Token_Class.Or));
+            symboles.Add(new KeyValuePair<string, Token_Class>("&&", Token_Class.And));
             
         }
 
-        private String getSymbolName(string symbol)
+        private Token_Class getSymbolName(string symbol)
         {
             foreach (var aSymbol in symboles)
             {
                 if (aSymbol.Key == symbol)
                     return aSymbol.Value;
             }
-            return "";
+            return Token_Class.NULL;
         }
 
         public void scanning(string[] sourceCode, ref List<Token> tokens ) {
             setSymboles();
-            string tokenType = "", lexeme="";
+            Token_Class tokenType = Token_Class.NULL;
+            string lexeme = "";
             bool comment = false, error=false, stringQWithoutQuate=false;
             int cnt = 0;
             foreach (string line in sourceCode)
@@ -98,13 +100,13 @@ namespace TinyScanner
                             }
                             if (!stringQWithoutQuate)
                             {
-                                addInScannerList(ref tokens, lexeme, TokenType.String.ToString(), cnt);
+                                addInScannerList(ref tokens, lexeme, Token_Class.String, cnt);
 
                                 continue;
                             }
                             else
                             {
-                                addInScannerList(ref tokens, lexeme, TokenType.Error.ToString(), cnt);
+                                addInScannerList(ref tokens, lexeme, Token_Class.Error, cnt);
                                 stringQWithoutQuate = false;
                                 lineNumber.Add(cnt);
                                 continue;
@@ -117,7 +119,7 @@ namespace TinyScanner
                             {
                                 lexeme += "*/";
                                 comment = false;
-                                tokenType = TokenType.Comment.ToString();
+                                tokenType = Token_Class.Comment;
                                 addInScannerList(ref tokens, lexeme, tokenType, cnt);
                                 i++;
                             }
@@ -142,16 +144,17 @@ namespace TinyScanner
                             string c= lexeme.First().ToString();
                             lexeme=lexeme.First().ToString().ToUpper()+lexeme.Substring(1);
                             //check if this idetifier is reserved keyword
-                            if (Enum.IsDefined(typeof(ReservedKeyWordes), lexeme))
+                            if (Enum.IsDefined(typeof(Token_Class), lexeme))
                             {
-                                addInScannerList(ref tokens, c + lexeme.Substring(1), lexeme, cnt);
+                              Token_Class tokenType_ = (Token_Class)  Enum.Parse(typeof(Token_Class), lexeme);
+                              addInScannerList(ref tokens, c + lexeme.Substring(1), tokenType_, cnt);
                             }
-                            else if (Enum.IsDefined(typeof(Datatype), lexeme))
+                            else if (Enum.IsDefined(typeof(Token_Class), lexeme))
                             {
-                                addInScannerList(ref tokens, c + lexeme.Substring(1), "DataType", cnt);
+                                addInScannerList(ref tokens, c + lexeme.Substring(1), (Token_Class)Enum.Parse(typeof(Token_Class), lexeme), cnt);
                             }
                             else
-                                addInScannerList(ref tokens, c+lexeme.Substring(1), TokenType.Identifier.ToString(), cnt);
+                                addInScannerList(ref tokens, c+lexeme.Substring(1), Token_Class.Identifier, cnt);
                             i--; //when return from getIdetifier the i is increased by 1
                             continue;
                         }
@@ -162,7 +165,7 @@ namespace TinyScanner
                             lexeme = "";
                             lexeme = line[i + 1]+"";
                             i += 2;
-                            addInScannerList(ref tokens, lexeme, TokenType.Char.ToString(), cnt);
+                            addInScannerList(ref tokens, lexeme, Token_Class.Char, cnt);
                             continue;
 
                         }
@@ -175,10 +178,10 @@ namespace TinyScanner
                             if (error)
                             {
                                 lineNumber.Add(cnt);
-                                tokenType = TokenType.Error.ToString();
+                                tokenType = Token_Class.Error ;
                             }
                             else
-                                tokenType = TokenType.Number.ToString();
+                                tokenType = Token_Class.Number ;
                             addInScannerList(ref tokens, lexeme, tokenType, cnt);
                             //need to sub -1 from i to start from the char after the number
                             i--;
@@ -189,12 +192,12 @@ namespace TinyScanner
                         if (i < line.Length)
                         {
                             string symbol = "";
-                            string symbolName = "";
+                            Token_Class symbolName  ;
                             if (i + 1 < line.Length)
                             {
                                 symbol = line[i] + line[i + 1].ToString();
                                 symbolName = getSymbolName(symbol);
-                                if (symbolName != "")
+                                if (symbolName != Token_Class.NULL)
                                 {
                                     addInScannerList(ref tokens, symbol, symbolName, cnt);
                                     i++;
@@ -203,7 +206,7 @@ namespace TinyScanner
                             }
                             symbol = line[i].ToString();
                             symbolName = getSymbolName(symbol);
-                            if (symbolName != "" && !stringQWithoutQuate)
+                            if (symbolName != Token_Class.NULL && !stringQWithoutQuate)
                             {
                                 addInScannerList(ref tokens, symbol, symbolName, cnt);
                                 continue;
@@ -221,7 +224,7 @@ namespace TinyScanner
                                 lexeme += line[++i];
                             }
                             if (!stringQWithoutQuate)
-                            addInScannerList(ref tokens, lexeme, TokenType.Error.ToString(), cnt);
+                            addInScannerList(ref tokens, lexeme, Token_Class.Error , cnt);
                         }
                         
                     }
@@ -230,13 +233,13 @@ namespace TinyScanner
             if (comment)
             {
                 lineNumber.Add(cnt);
-                addInScannerList(ref tokens, lexeme, TokenType.Error.ToString(), cnt);
+                addInScannerList(ref tokens, lexeme, Token_Class.Error , cnt);
             }
         }
 
-        private void addInScannerList(ref List<Token>tokens, string lex, string tokenType, int lineNumber)
+        private void addInScannerList(ref List<Token>tokens, string lex, Token_Class tokenType, int lineNumber)
         {
-            //scannedCode.Add(new KeyValuePair<string, string>(s, tokenType));
+            //scannedCode.Add(new KeyValuePair<string, Token_Class>(s, tokenType));
             token = new Token();
             token.lex=lex;
             token.tokentype=tokenType;
@@ -292,5 +295,15 @@ namespace TinyScanner
             return number;
         }
 
+    }
+    public enum Token_Class
+    {
+        Read, Write, Repeat, Until, If, Elseif, Else, Then, Return, Endl, Main, End ,
+         Int, Float, String, Char ,
+         Number , Comment, Error, Identifier,
+         Plus, Minus, Division ,Times ,GreaterThan ,LessThan, GreaterThanOrEqual,
+        LessThanOrEqual,Equal , Assign ,RightParentheses ,LeftParentheses,SemiColon,
+        RightBraces, LeftBraces, Comma, Or, And, NULL, NotEqual
+         
     }
 }

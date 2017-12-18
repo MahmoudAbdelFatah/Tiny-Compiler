@@ -10,12 +10,7 @@ using System.Windows.Forms;
 
 namespace TinyScanner
 {
-    public class Token
-    {
-        public string lex;
-        public string tokentype;
-        public int lineNumber;
-    }
+   
     public partial class Scanner : Form
     {
 
@@ -57,7 +52,7 @@ namespace TinyScanner
             int cnt = 0;
             foreach (var value in tokens)
             {
-                if (value.tokentype != "Error")
+                if (value.tokentype != Token_Class.Error)
                 {
                     dataGridView1.RowCount++;
                     dataGridView1.Rows[dataGridView1.RowCount - 2].Cells[0].Value = value.lex;
@@ -107,5 +102,43 @@ namespace TinyScanner
 
         }
 
+        private void parseButton_Click(object sender, EventArgs e)
+        {
+            parseTree.Refresh(); ParsingPhase.clear();
+            
+            string[] sourceCode = textBox1.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+            ScannerPhase scanner = new ScannerPhase();
+            lineNumber = scanner.getlineNumberList();
+            
+            List<Token> tokens = new List<Token>();
+            scanner.scanning(sourceCode, ref tokens);
+
+            Node root = ParsingPhase.Parse(tokens);
+            parseTree.Nodes.Add(ParsingPhase.PrintParseTree(root));
+            for( int i =0 ;i<ParsingPhase.ParserErrors.Count() ; i++){
+
+
+               // dataGridView2.Rows.Insert(ParsingPhase.ParserErrors[i].Key.ToString(), ParsingPhase.ParserErrors[i].Value, ToString());
+                dataGridView2.Rows.Insert(i,ParsingPhase.ParserErrors[i].Key.ToString(), ParsingPhase.ParserErrors[i].Value, ToString());
+            }
+             
+
+            
+        }
+        public  void insert(string str )
+        {
+            dataGridView2.Rows.Insert(0, 4, str);
+
+        }
+
+
     }
+
+    public class Token
+    {
+        public string lex;
+        public Token_Class tokentype;
+        public int lineNumber;
+    }
+   
 }
