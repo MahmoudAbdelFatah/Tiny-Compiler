@@ -49,7 +49,7 @@ namespace TinyScanner
             {
                 Node node = new Node();
                 node.token = new Token();
-                node.token.lex = "Program";
+                node.token.lex = Token_Class.Program.ToString();
                 Node functionStatementNode = functionStatement(); 
                 if(functionStatementNode!= null)
                 {
@@ -70,7 +70,7 @@ namespace TinyScanner
             {
                 Node node = new Node();
                 node.token = new Token();
-                node.token.lex = "Main Fuction";
+                node.token.lex = Token_Class.Main_Fuction.ToString();
                 Node datatypeNode = dataType();
                if (datatypeNode!= null)
                {
@@ -98,7 +98,7 @@ namespace TinyScanner
                 }
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Fuction Statement";
+                 node.token.lex = Token_Class.Fuction_Statement.ToString();
                   
                  Node decalartionNode = functionDeclaration();
                  if (decalartionNode != null)
@@ -113,7 +113,7 @@ namespace TinyScanner
             {
                 Node node = new Node();
                 node.token = new Token();
-                node.token.lex = "Fuction Statement";
+                node.token.lex = Token_Class.Fuction_Declaration.ToString();
                 Node datatypeNode = dataType();
                 if (datatypeNode != null)
                 {
@@ -135,7 +135,7 @@ namespace TinyScanner
             {
                 Node node = new Node();
                 node.token = new Token();
-                node.token.lex = "Function Body";
+                node.token.lex = Token_Class.Function_Body.ToString();
                 Node leftNode = match(Token_Class.LeftBraces); 
                 if(leftNode!=null)
                 {
@@ -161,7 +161,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Statements";
+                 node.token.lex = Token_Class.Statements.ToString();
                  Node statementNode = statement();
                  if(statementNode != null )
                  {
@@ -175,7 +175,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Statement";
+                 node.token.lex = Token_Class.Statement.ToString();
                  Node statmentNode = repeatStatement();
                  if(statmentNode != null)
                  {
@@ -225,14 +225,14 @@ namespace TinyScanner
                      node.children.Add(statmentNode);
                      return node;
                  }
-                 
+           
                  return null;
              }
              public static Node parameter()
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Parameter";
+                 node.token.lex = Token_Class.Parameter.ToString();
                  Node dataTypeNode = dataType(); 
                  if(dataTypeNode != null )
                  {
@@ -250,7 +250,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Parameters";
+                 node.token.lex = Token_Class.Parameters.ToString();
                  Node parameterNode = parameter();
                  if (parameterNode != null)
                  {
@@ -264,7 +264,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Parameters Cont";
+                 node.token.lex = Token_Class.Parameters_Cont.ToString();
                  Node CommaNode = comma(); 
                  if (CommaNode != null)
                  {
@@ -283,7 +283,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Fuction Name";
+                 node.token.lex = Token_Class.Fuction_Name.ToString();
                  Node identifierNode = identifier();
                  if(identifierNode != null )
                  {
@@ -301,7 +301,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Repeat Statement";
+                 node.token.lex = Token_Class.Repeat_Statement.ToString();
                  Node repeatNode = match(Token_Class.Repeat);
                  if (repeatNode != null)
                  {
@@ -322,7 +322,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Else Statement";
+                 node.token.lex = Token_Class.Else_Statement.ToString();
                  Node elseNode = match(Token_Class.Else);
                  if (elseNode != null)
                  {
@@ -341,7 +341,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "ElseIf Statement";
+                 node.token.lex = Token_Class.Else_Statement.ToString();
                  Node elseifNode = match(Token_Class.Elseif);
                  if (elseifNode != null)
                  {
@@ -362,7 +362,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "If Statement";
+                 node.token.lex = Token_Class.If_Statement.ToString();
                  Node ifNode = match(Token_Class.If);
                  if (ifNode != null)
                  {
@@ -385,7 +385,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "EndIf Statement";
+                 node.token.lex = Token_Class.EndIf_Statement.ToString();
                  Node elseStatNode = elseStatement();
                  if (elseStatNode != null)
                  {
@@ -414,7 +414,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Or Operation";
+                 node.token.lex = Token_Class.Or_Operation.ToString();
                  Node orNode = match(Token_Class.Or);
                  if (orNode != null)
                  {
@@ -428,7 +428,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "And Operation";
+                 node.token.lex = Token_Class.And_Operation.ToString();
                  Node andNode = match(Token_Class.And);
                  if (andNode != null)
                  {
@@ -442,7 +442,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Condition";
+                 node.token.lex = Token_Class.Condition.ToString();
                  Node expreNode = expression();
                  if (expreNode != null)
                  {
@@ -463,7 +463,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Condition Term";
+                 node.token.lex = Token_Class.Condition_Term.ToString();
                  Node CondationNode = condition();
                  if (CondationNode != null)
                  {
@@ -477,7 +477,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Condition Term Dash";
+                 node.token.lex = Token_Class.Condition_Term_Dash.ToString();
                  Node andNode = andOP();
                  if(andNode != null)
                  {
@@ -492,7 +492,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Condition Statement";
+                 node.token.lex = Token_Class.Condition_Statement.ToString();
                  Node conditionNode = condition();
                  if (conditionNode != null)
                  {
@@ -517,7 +517,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Condition Operator";
+                 node.token.lex = Token_Class.Condition_Operator.ToString();
                  Node OpNode = match(Token_Class.LessThan);
                  if (OpNode != null)
                  {
@@ -549,7 +549,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Return Statement";
+                 node.token.lex = Token_Class.Return_Statement.ToString();
                     Node returnNode = match(Token_Class.Return) ;
                     if (returnNode != null)
                     {
@@ -568,7 +568,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Read Statement";
+                 node.token.lex = Token_Class.Read_Statement.ToString();
                  
                  Node readNode = match(Token_Class.Read);
                  if(readNode != null)
@@ -590,7 +590,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Write Statement";
+                 node.token.lex = Token_Class.Write_Statement.ToString();
                  Node writeNode = match(Token_Class.Write);
                  if (writeNode != null)
                  {
@@ -610,7 +610,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Write Statement Cont";
+                 node.token.lex = Token_Class.Write_Statement_Cont.ToString();
                 Node endlNode =  match(Token_Class.Endl);
                 if (endlNode != null)
                 {
@@ -635,7 +635,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Declaration Statement";
+                 node.token.lex = Token_Class.Declaration_Statement.ToString();
                  Node dataTypeNode = dataType();
                  if (dataTypeNode != null)
                  {
@@ -656,7 +656,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Declaration StatementCont";
+                 node.token.lex = Token_Class.Declaration_Statement.ToString();
                  Node commaNode = declarationStatementCase();
                  if (commaNode != null)
                  {
@@ -670,7 +670,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Declaration Statement Case";
+                 node.token.lex = Token_Class.Declaration_Statement_Case.ToString();
                  Node commaNode = comma();
                  if (commaNode != null)
                  {
@@ -691,7 +691,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Comma";
+                 node.token.lex = Token_Class.Comma.ToString();
                  Node CommaNode = match(Token_Class.Comma);
                  if (CommaNode != null)
                  {
@@ -704,12 +704,10 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "DataType";
+                 node.token.lex = Token_Class.DataType.ToString();
 
                  Node intNode = match(Token_Class.Int);
-                 
                 
-               
                  if (intNode != null)
                  {
                      node.children.Add(intNode);
@@ -742,7 +740,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Assignment Statement";
+                 node.token.lex = Token_Class.Assignment_Statement.ToString();
 
                  Node identifierNode = identifier();
                  if (identifierNode != null)
@@ -764,7 +762,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Expression";
+                 node.token.lex = Token_Class.Expression.ToString();
                  Node termNode = term();
                  if (termNode != null)
                  {
@@ -778,7 +776,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Expression Dash";
+                 node.token.lex = Token_Class.Expression_Dash.ToString();
                  Node addopNode = addOp();
                  if (addopNode != null)
                  {
@@ -793,7 +791,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Add Operation";
+                 node.token.lex = Token_Class.And_Operation.ToString();
                  Node opNode = match(Token_Class.Plus);
                  if (opNode != null)
                  {
@@ -813,12 +811,11 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Mul Operation";
+                 node.token.lex = Token_Class.Mul_Operation.ToString();
                  Node timeNode = match(Token_Class.Times);
                  if (timeNode != null)
                  {
                      node.children.Add(timeNode);
-                    
                      return node;
                  }
                  timeNode = match(Token_Class.Division);
@@ -835,7 +832,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Term";
+                 node.token.lex = Token_Class.Term.ToString();
                  Node factorNode = factor();
                  if (factorNode != null)
                  {
@@ -850,7 +847,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "TermDash";
+                 node.token.lex = Token_Class.TermDash.ToString();
              
                  Node mulopNode = mulOp();
                  if (mulopNode != null)
@@ -866,7 +863,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Factor";
+                 node.token.lex = Token_Class.Factor.ToString();
                  Node statmentNode = number();
                  if (statmentNode != null)
                  {
@@ -906,7 +903,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Function Part";
+                 node.token.lex = Token_Class.Function_Part.ToString();
                  Node statmentNode  = match(Token_Class.LeftParentheses);
                  if (statmentNode != null)
                  {
@@ -921,7 +918,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Function Arguments";
+                 node.token.lex = Token_Class.Function_Arguments.ToString();
                  Node statmentNode = expression();
                  if (statmentNode != null)
                  {
@@ -935,7 +932,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Function Arguments";
+                 node.token.lex = Token_Class.Function_Arguments_Cont.ToString();
                  Node statmentNode = match(Token_Class.Comma);
                  if (statmentNode != null)
                  {
@@ -950,7 +947,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Function Call";
+                 node.token.lex = Token_Class.Function_Call.ToString();
                  Node identifierNode = identifier();
                  if (identifierNode != null)
                  {
@@ -964,7 +961,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "identifier";
+                 node.token.lex = Token_Class.Identifier.ToString();
  
                  Node readNode = match(Token_Class.Identifier);
                  if (readNode != null)
@@ -979,7 +976,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "letter DigitComp";
+                 node.token.lex = Token_Class.letter_DigitComp.ToString(); 
                  node.children.Add(string_());
                  return node;
              }
@@ -1014,7 +1011,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Comment Statement";
+                 node.token.lex = Token_Class.Comment_Statement.ToString();
                  Node commentNode = match(Token_Class.Comment);
                  if (commentNode != null)
                  {
@@ -1037,7 +1034,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "String";
+                 node.token.lex = Token_Class.String.ToString();
                  Node stringNode = match(Token_Class.String);
                  if (stringNode != null)
                  {
@@ -1050,7 +1047,7 @@ namespace TinyScanner
              {
                  Node node = new Node();
                  node.token = new Token();
-                 node.token.lex = "Number";
+                 node.token.lex = Token_Class.Number.ToString();
                  Node numberNode = match(Token_Class.Number);
                  if (numberNode != null)
                  {

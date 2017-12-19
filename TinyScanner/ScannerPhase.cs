@@ -304,6 +304,13 @@ namespace TinyScanner
          Plus, Minus, Division ,Times ,GreaterThan ,LessThan, GreaterThanOrEqual,
         LessThanOrEqual,Equal , Assign ,RightParentheses ,LeftParentheses,SemiColon,
         RightBraces, LeftBraces, Comma, Or, And, NULL, NotEqual
-         
+         ,Program,Main_Fuction ,Fuction_Statement,Fuction_Declaration , 
+           Function_Arguments,     Function_Body,Statements , Statement,Parameter
+        , Parameters, Parameters_Cont, Fuction_Name, Repeat_Statement, Else_Statement
+
+        ,Function_Call,Function_Arguments_Cont   ,  Function_Part   , ElseIf_Statement,If_Statement,
+                EndIf_Statement ,Or_Operation ,And_Operation
+        ,Comment_Statement,letter_DigitComp
+        ,Factor,TermDash,Term,Mul_Operation,Expression_Dash,Expression,Assignment_Statement,DataType,Declaration_Statement_Case,Declaration_StatementCont,Declaration_Statement,Write_Statement_Cont,Write_Statement, Read_Statement , Return_Statement , Condition_Operator , Condition_Statement  ,Condition,Condition_Term,Condition_Term_Dash
     }
 }
